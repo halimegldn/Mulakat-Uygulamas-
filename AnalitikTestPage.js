@@ -2,45 +2,49 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 
 const AnalitikTestPage = ({ navigation }) => {
-  const questions = [
+  // Sorular ve cevaplar
+const questions = [
     {
-      question: "10 - 5 kaçtır?",
-      options: ["3", "4", "5", "6"],
-      correctAnswer: "5"
+      question: "Bir arabanın hızı saatte 60 km ise, bu araba 4 saatte kaç km yol alır?",
+      options: ["180 km", "240 km", "300 km", "320 km"],
+      correctAnswer: "240 km"
     },
     {
-      question: "8 / 2 işleminin sonucu nedir?",
-      options: ["2", "3", "4", "5"],
-      correctAnswer: "4"
+      question: "Bir işletmenin bir ürün için üretim maliyeti 500 TL ve bu ürünü satışa 750 TL'ye koymuşsa, bu üründen ne kadar kar elde etmiş olur?",
+      options: ["150 TL", "200 TL", "250 TL", "300 TL"],
+      correctAnswer: "250 TL"
     },
     {
-      question: "9 * 3 işleminin sonucu kaçtır?",
-      options: ["24", "25", "26", "27"],
-      correctAnswer: "27"
+      question: "Bir kutuda 12 kırmızı, 8 mavi ve 6 yeşil top bulunmaktadır. Kutudan rastgele çekilen bir topun mavi olma olasılığı nedir?",
+      options: ["1/3", "2/9", "1/4", "3/8"],
+      correctAnswer: "2/9"
     },
     {
-      question: "3 karekök 9 işlemi nedir?",
-      options: ["3", "6", "9", "27"],
-      correctAnswer: "3"
-    },
-    {
-      question: "12 + 7 kaç eder?",
-      options: ["17", "18", "19", "20"],
-      correctAnswer: "19"
-    },
-    {
-      question: "15 - 8 kaçtır?",
-      options: ["5", "6", "7", "8"],
-      correctAnswer: "7"
+      question: "Bir işletmenin yıllık geliri 200.000 TL, giderleri ise 150.000 TL ise, bu işletmenin yıllık net karı ne kadardır?",
+      options: ["50.000 TL", "100.000 TL", "150.000 TL", "200.000 TL"],
+      correctAnswer: "50.000 TL"
     }
   ];
 
+  // Seçilen cevapları ve doğru cevap sayısını tutmak için state
   const [selectedAnswers, setSelectedAnswers] = useState(Array(questions.length).fill(null));
+  const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
 
-  const handleAnswer = (questionIndex, optionIndex) => {
+  // Cevap seçildiğinde çalışacak fonksiyon
+  const handleAnswer = (questionIndex, optionIndex, correctAnswer) => {
     const newSelectedAnswers = [...selectedAnswers];
     newSelectedAnswers[questionIndex] = optionIndex;
     setSelectedAnswers(newSelectedAnswers);
+
+    if (questions[questionIndex].options[optionIndex] === correctAnswer) {
+      // Doğru cevaplanan soru sayısını artır
+      setCorrectAnswersCount(prevCount => prevCount + 1);
+    }
+  };
+
+  // Bitir butonuna basıldığında çalışacak fonksiyon
+  const handleFinishTest = () => {
+    navigation.navigate('SonucSayfasi', { analyticCorrectCount: correctAnswersCount });
   };
 
   return (
@@ -54,7 +58,7 @@ const AnalitikTestPage = ({ navigation }) => {
                 <TouchableOpacity
                   key={optionIndex}
                   style={[styles.optionButton, selectedAnswers[questionIndex] === optionIndex && styles.selectedOption]}
-                  onPress={() => handleAnswer(questionIndex, optionIndex)}
+                  onPress={() => handleAnswer(questionIndex, optionIndex, item.correctAnswer)}
                 >
                   <Text style={styles.optionText}>{option}</Text>
                 </TouchableOpacity>
@@ -63,17 +67,18 @@ const AnalitikTestPage = ({ navigation }) => {
           </View>
         ))}
       </ScrollView>
-      <TouchableOpacity style={styles.button} onPress={() => console.log(selectedAnswers)}>
+      <TouchableOpacity style={styles.button} onPress={handleFinishTest}>
         <Text style={styles.buttonText}>Bitir</Text>
       </TouchableOpacity>
     </View>
   );
+
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#CCCCFF', // Arka plan rengi
     paddingHorizontal: 10,
   },
   scrollView: {
@@ -86,7 +91,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   questionText: {
-    fontSize: 14,
+    fontSize: 13, // Soru metin boyutu daha da küçültüldü
     marginBottom: 5,
   },
   optionsContainer: {
@@ -97,22 +102,24 @@ const styles = StyleSheet.create({
   },
   optionButton: {
     backgroundColor: 'blue',
-    paddingVertical: 6,
-    paddingHorizontal: 8,
-    borderRadius: 5,
-    margin: 3,
+    borderRadius: 20, // Seçenek kutusu yuvarlatıldı
+    margin: 5,
+    width: 100, // Seçenek kutusu genişliği küçültüldü
+    height: 30, // Seçenek kutusu yüksekliği düşürüldü
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   optionText: {
     color: 'white',
-    fontSize: 12,
+    fontSize: 10, // Seçenek metin boyutu daha da küçültüldü
   },
   selectedOption: {
     backgroundColor: 'green',
   },
   button: {
-    backgroundColor: 'blue',
+    backgroundColor: '#5252FF',
     paddingVertical: 8,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20, // Bitir butonu yatay padding artırıldı
     borderRadius: 5,
     marginTop: 10,
     alignSelf: 'center',
