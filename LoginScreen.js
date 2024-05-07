@@ -6,21 +6,14 @@ const LoginPage = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
- const handleLogin = async () => {
-    try {
-      const db = firebase.firestore();
-      const usersRef = db.collection('users');
-      const snapshot = await usersRef.where('email', '==', email).where('password', '==', password).get();
-      
-      if (snapshot.empty) {
-        throw new Error('Kullanıcı adı veya şifre hatalı!');
-      } else {
-        console.log('Başarıyla giriş yapıldı!');
-        setIsLoggedIn(true);
-      }
-    } catch (error) {
-      console.error('Giriş yaparken bir hata oluştu:', error.message);
-      setError(error.message);
+  const handleLogin = () => {
+    // Burada gerçek bir kimlik doğrulama işlemi yapılmalıdır.
+    if (email === 'halime@gmail.com' && password === 'halime') {
+      // Giriş başarılı olduğunda onLogin callback fonksiyonunu çağır
+      onLogin();
+    } else {
+      // Hatalı giriş durumunda kullanıcıya uyarı ver.
+      alert('Hatalı e-posta veya şifre');
     }
   };
 
